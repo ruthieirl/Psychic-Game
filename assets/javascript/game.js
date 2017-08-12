@@ -1,63 +1,52 @@
-//Create an array that lists all of the options. (26 letters of the alphabet, 0-25 array length)
-var chosenLetter = ["a ", "b", "c", "d", "e", "f", "g", "h", "i,", "j", "k", "l", "m", "n","o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
-
-//Creating variables to hold wins, losses, and number of guesses.
+//Set up an array with all 26 letters in it.
+var chosenLetter = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+//Set up variables to hold wins, losses, and guesses.
 var wins = 0;
 var losses = 0;
 var guesses = 9;
+//Set up an empty array to keep track of guesses.
 var soFar = [];
-//Computer randomly chooses a choice from the array options
-var computerChoice = chosenLetter[Math.floor(Math.random() * chosenLetter.length)];
-	console.log(computerChoice);
+//Set up variable to hold user guess.
+var userGuess = null;
+//Computer will choose a random letter from the array.
+var computerGuess = chosenLetter[Math.floor(Math.random() * chosenLetter.length)];
 
-//This happens when a user presses a key
+//The key press will set off function
 document.onkeyup = function(event) {
-	//Determines which key was pressed
-	var userGuess = event.key.toLowerCase();
-	console.log(userGuess);
-	//Makes sure that the userGuess is a letter key.
-	if (userGuess == "a" || userGuess == "b" || userGuess == "c" || userGuess == "d" || userGuess == "e" || userGuess == "f" || userGuess == "g" || userGuess == "h" || userGuess == "i" || userGuess == "j" || userGuess == "k" || userGuess == "l" || userGuess == "m" || userGuess == "n" || userGuess == "o" || userGuess == "p" || userGuess == "q" || userGuess == "r" || userGuess == "s" || userGuess == "t" || userGuess == "u" || userGuess == "v" || userGuess == "w" || userGuess == "x" || userGuess == "y" || userGuess == "z") {
-		//The number of guesses decreases with each incorrect guess.
+
+	//makes sure user picks a letter
+	var userGuess = String.fromCharCode(event.keyCode).toLowerCase();
+	if (soFar.indexOf(userGuess) < 0 && chosenLetter.indexOf(userGuess) >= 0) {
+		soFar[soFar.length]=userGuess;
+		//decrease guesses by 1
 		guesses--;
-		//Takes the userGuess and puts it in an array so the user can keep track of choices.
-		soFar.push(userGuess);
-		console.log(soFar);
+	}
+	//if both guesses match, wins increase, soFar empties, computer chooses new letter
+	if (computerGuess == userGuess) {
+		wins++;
+		alert("You won!");
+		guesses = 9;
+		soFar.length = 0;
+		computerGuess = chosenLetter[Math.floor(Math.random() * chosenLetter.length)];
+	}
+	//if user goes through all 9 guesses and does not match computer's choice, losses increas, soFar empties, and computer chooses new letter
+	if (guesses == 0) {
+		losses++;
+		alert("You lost!");
+		guesses = 9;
+		soFar.length = 0;
+		computerGuess = chosenLetter[Math.floor(Math.random() * chosenLetter.length)];
+	}
 
-		//If the user chooses the computer's letter, wins increase, guesses are reset.
-		if (userGuess === computerChoice) {
-			wins++;
-			guesses = 9;
-			soFar.length = 0;
-			alert("You win!");
-			console.log("wins");
-			//computer picks new letter
-		}
-		//If the user does not pick the computer's letter, losses increases. 
-		if (userGuess != computerChoice) {
-			//losses++;
-			console.log("losses");
-		}
-		if (guesses == 0) {
-			soFar.length = 0;
-			losses++;
-			guesses = 9;
-			console.log(computerChoice);
-			//computer picks a new letter
-		}
+	//HTML to replace the display on the page
+	var html = "<h1>The Psychic Game</h1>" + 
+				"<p>Guess what letter I\'m thinking of</p>" + 
+				"<p>Wins: " + wins + "</p>" + 
+				"<p>Losses: " + losses + "</p>" + 
+				"<p>Guesses Left: " + guesses + "</p>" + 
+				"<p>Your guesses so far: " + soFar + "</p>";
 
-		var html = 
-			"<h1>The Psychic Game</h1>" +
-			"<p>Guess what letter I'm thinking of...</p>" +
-			"<p>Wins: " + wins + "</p>" +
-			"<p>Losses: " + losses + "</p>" +
-			"<p>Guesses Left: " + guesses + "</p>" +
-			"<p>Your Guesses So Far: " +  soFar + "</p>";
+	//This will put the above HTML code into the #game div
+	document.querySelector("#game").innerHTML = html;
 
-		document.querySelector("#game").innerHTML = html;
-
-
-	//If the user guesses other than a letter, alert will appear.
-	} else {
-		alert("Please make sure you chose a letter.")
-	};
 };
